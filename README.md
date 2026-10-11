@@ -63,6 +63,23 @@ I attempted all five tasks:
 
    * Redesigns a visualization using principles of visual perception and effective communication.
 
+### Part 3 — Data Visualization (Week 3)
+
+This section contains my Week 3 Data Visualization assignments, including Python implementations, visualizations, and analysis.
+
+The tasks focus on applying data visualization concepts through practical exercises, exploring different approaches to presenting data, and improving the clarity and effectiveness of visual representations.
+
+**Folder:** `week3/`
+
+The Week 3 work includes:
+- Python-based visualization exercises.
+- Practical implementation of data visualization techniques.
+- Analysis and interpretation of visual results.
+- Additional exercises and experiments included in the assignment.
+
+The completed work is organized in the Week 3 folder for easy access and review.
+
+
 ## Repository Structure
 
 ```text
