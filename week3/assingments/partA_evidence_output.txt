@@ -1,0 +1,80 @@
+
+======== 1  helmets - Simpson's paradox
+{'Premium': 5.4, 'Standard': 2.15} per 1,000 trips overall
+helmet_grade      Premium  Standard
+road_type                          
+City arterial         2.2      3.00
+Inner-city lanes      1.0      1.39
+Motorway              6.0      8.00
+share of riders on the Motorway: {'Premium': 0.85, 'Standard': 0.033}
+mean experience (months): {'Premium': 31.4, 'Standard': 31.5}
+mean speed (kph): {'Premium': 67.0, 'Standard': 30.2}
+
+======== 2  chai - shared growth in head-count
+r(cups, failures) = 0.982   (the brief quotes 0.93; check what your chart's label says)
+r(enrolled, cups) = 0.997  r(enrolled, failures) = 0.977
+per-student r = 0.293
+exam-month decoy: r(is_exam, cups) = 0.058 | within exam months r = 0.996 | within non-exam r = 0.996
+
+======== 3  AQI - the stations that vanished
+first offline day: 2026-03-02 | stations offline: 9 zones: ['Arterial', 'Industrial']
+headline mean before/after: 202.1 -> 137.2 (-32.1%)
+same 13 stations before/after: 137.09 -> 137.21
+mean AQI of the 9 dropped stations BEFORE they vanished: 296.0
+reporting rows: 2100 of 2640
+
+======== 4  four departments - Anscombe
+I Computer Science n 11 mean 18.0 14.5 r 0.816 slope 0.25
+II Business Administration n 11 mean 18.0 14.5 r 0.816 slope 0.25
+III Electrical Engineering n 11 mean 18.0 14.5 r 0.816 slope 0.25
+IV Architecture n 11 mean 18.0 14.5 r 0.817 slope 0.25
+II: linear R2 0.666 quadratic R2 1.0 peak at 21.9 h
+III: r without the 19.74 point = 1.0
+IV: SD of hours without the 38h student = 0.0
+
+======== 5  five cohorts, one set of statistics
+straight line  n 180 mean 48.00/63.00 sd 12.00/15.00 r 0.420 | spearman 0.41 | radius sd 0.60
+ring           n 180 mean 48.00/63.00 sd 12.00/15.00 r 0.420 | spearman 0.40 | radius sd 0.22
+star           n 180 mean 48.00/63.00 sd 12.00/15.00 r 0.420 | spearman 0.44 | radius sd 0.50
+two clusters   n 180 mean 48.00/63.00 sd 12.00/15.00 r 0.420 | spearman 0.26 | radius sd 0.38
+the letter X   n 180 mean 48.00/63.00 sd 12.00/15.00 r 0.420 | spearman 0.27 | radius sd 0.75
+two clusters, within-cluster r: -0.45 -0.57
+
+======== 6  heatmap - one participant
+r = 0.765 p = 7.1e-36 | 190 pairs, Bonferroni threshold = 2.6e-04
+extreme row: {'study_site': 'Site C', 'age_years': 30.0, 'hba1c': 15.8, 'creatinine': 1050.0}
+r without that ONE row = -0.004 | spearman with it = 0.032
+r by site: {'Site A': np.float64(-0.05), 'Site B': np.float64(0.34), 'Site C': np.float64(0.92), 'Site D': np.float64(-0.11)}
+median creatinine by site: {'Site A': 80.1, 'Site B': 81.8, 'Site C': 84.1, 'Site D': 80.1}
+age decoy - partial r controlling for age: 0.764
+bonus: resting_hr vs vo2max pooled r = 0.77 | within device: {'DX-100': np.float64(-0.41), 'DX-200': np.float64(-0.4), 'DX-300': np.float64(-0.5), 'DX-400': np.float64(-0.63)}
+device model = site: True
+
+======== 7F  dual axis
+month  revenue_pkr_m  cost_pkr_m  profit
+  Jan             52          44       8
+  Feb             58          46      12
+  Mar             61          47      14
+  Apr             66          49      17
+  May             71          51      20
+  Jun             78          53      25
+loss months: 0
+
+======== 8  bin width - systolic BP
+  3 bins (width  35.7 mmHg): 1 peak(s)
+  5 bins (width  21.4 mmHg): 2 peak(s)
+ 10 bins (width  10.7 mmHg): 2 peak(s)
+ 20 bins (width   5.3 mmHg): 2 peak(s)
+ 40 bins (width   2.7 mmHg): 6 peak(s)
+100 bins (width   1.1 mmHg): 4 peak(s)
+width  1 mmHg: 6 peak(s)
+width  2 mmHg: 2 peak(s)
+width  5 mmHg: 2 peak(s)
+width 10 mmHg: 2 peak(s)
+n = 10000 | share >= 141: 0.416
+
+======== 9  KDE above a physical limit - SpO2
+bw_adjust 1: bandwidth 0.35 pts, density above 100% = 1.6%
+bw_adjust 2: bandwidth 0.71 pts, density above 100% = 3.0%
+bw_adjust 2.6: bandwidth 0.92 pts, density above 100% = 4.4%
+integers only: True | readings at exactly 100: 304 (3.0%) | max = 100.0

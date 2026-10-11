@@ -1,0 +1,27 @@
+Q1 - the audit table
+
+chart                       subject  dim data effect graphic effect  Lie Factor            verdict  LF if dim left at 1
+    A            Corporate tax rate    1       +6.7%        +500.0%       75.00 exaggerates 75.00x                75.00
+    B Federal health budget (Rs bn)    2      +50.0%        +125.0%        2.50  exaggerates 2.50x                 1.00
+    C        Export earnings ($ bn)    1      +20.0%         +20.0%        1.00             honest                 1.00
+    D           Air-pollution index    1      +50.0%         +12.5%        0.25 understates (0.25)                 0.25
+    E    City population (millions)    2     +300.0%       +1500.0%        5.00  exaggerates 5.00x                 1.00
+
+Q3 - graphics that need ink_dimension=2: B, E
+   B: LF is 2.5 with dim=2 but would read 1.0 with dim=1 - the area grew as the square of the length
+   E: LF is 5.0 with dim=2 but would read 1.0 with dim=1 - the area grew as the square of the length
+
+Q5 - chart F, the underlying data (PKR millions, same unit)
+
+month  revenue_pkr_m  cost_pkr_m  profit_pkr_m
+  Jan             52          44             8
+  Feb             58          46            12
+  Mar             61          47            14
+  Apr             66          49            17
+  May             71          51            20
+  Jun             78          53            25
+
+Loss months: 0 of 6. Profit grows 8 -> 25 PKR m.
+Revenue +50%, cost +20% Jan->Jun.
+Lie Factor for F: NOT COMPUTABLE. The formula compares ink to data on ONE scale. A dual-axis chart has two
+scales, so 'ink' for each line depends on an arbitrary axis range chosen by the author; the crossing point moves when either axis moves.

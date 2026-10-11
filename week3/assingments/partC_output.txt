@@ -1,0 +1,34 @@
+wrote /home/claude/work/assignments/partC_palette.png 
+
+matplotlib tab10, first four
+  normal  closest pair  S2 #FF7F0E vs S4 #D62728   ΔE  18.6   clear
+  deutan  closest pair  S3 #2CA02C vs S4 #D62728   ΔE   4.1   FAILS — same colour
+  protan  closest pair  S2 #FF7F0E vs S3 #2CA02C   ΔE   0.7   FAILS — same colour
+  tritan  closest pair  S1 #1F77B4 vs S3 #2CA02C   ΔE   6.7   needs a second channel
+
+The course palette (3 slots + the 4th)
+  normal  closest pair  S2 #D55E00 vs S4 #CC79A7   ΔE  16.4   clear
+  deutan  closest pair  S3 #009E73 vs S4 #CC79A7   ΔE   7.5   needs a second channel
+  protan  closest pair  S1 #0072B2 vs S4 #CC79A7   ΔE   9.5   ok
+  tritan  closest pair  S1 #0072B2 vs S3 #009E73   ΔE   8.4   ok
+
+Q3 - worst pair per palette (every pair compared)
+  matplotlib tab10, first four normal  S2/S4  dE  18.6  clear
+  matplotlib tab10, first four deutan  S3/S4  dE   4.1  FAILS — same colour
+  matplotlib tab10, first four protan  S2/S3  dE   0.7  FAILS — same colour
+  matplotlib tab10, first four tritan  S1/S3  dE   6.7  needs a second channel
+  course 3 slots             normal  S1/S3  dE  18.7  clear
+  course 3 slots             deutan  S2/S3  dE  11.0  ok
+  course 3 slots             protan  S2/S3  dE  13.0  ok
+  course 3 slots             tritan  S1/S3  dE   8.4  ok
+  course + 4th slot          normal  S2/S4  dE  16.4  clear
+  course + 4th slot          deutan  S3/S4  dE   7.5  needs a second channel
+  course + 4th slot          protan  S1/S4  dE   9.5  ok
+  course + 4th slot          tritan  S1/S3  dE   8.4  ok
+
+Q4 - my rule for charts with more than three categories:
+  Never add a fourth colour. Keep the three safe hues, and carry the extra category with a second channel:
+  a marker shape (vizlib.MARKERS), a direct label on the line/bar, or small multiples (facet) / a table.
+  The 4th slot (#CC79A7) is only legal WITH direct labels or a table view.
+
+wrote /home/claude/work/assignments/partC_figure_deutan.png
