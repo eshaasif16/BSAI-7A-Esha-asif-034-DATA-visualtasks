@@ -2,132 +2,111 @@
 
 ## Student Information
 
-* **Name:** Esha Asif
-* **Roll Number:** 034
-* **Program:** BS Artificial Intelligence (BSAI)
-* **Section:** 7A
+- **Name:** Esha Asif
+- **Roll Number:** 034
+- **Program:** BS Artificial Intelligence (BSAI)
+- **Section:** 7A
 
 ## About This Repository
 
-This repository contains my Data Visualization course tasks and practical work. The notebooks focus on choosing appropriate visualizations, understanding visual perception, and applying principles of effective data visualization.
+This repository contains my Data Visualization course assignments and practical work. It covers chart selection, data visualization techniques, visual perception, and effective visual communication.
 
-All notebooks include the relevant code, visualizations, outputs, and written analysis.
+The repository includes Jupyter notebooks with Python code, visualizations, outputs, and written analysis for the completed tasks.
 
 ## Tasks Completed
 
 ### Part 1 — Chart Choice & Honest Processing
 
-I attempted all five tasks:
+I attempted all five tasks in this part.
 
 1. **Datasaurus — Why We Visualize**
-
-   * Demonstrates why visualizing data is important even when summary statistics are similar.
+   - Demonstrates why visualizing data is important, even when datasets have similar summary statistics.
 
 2. **Gapminder — Trends & the Spaghetti Problem**
-
-   * Explores trends over time and discusses the difficulty of interpreting too many lines in a single visualization.
+   - Explores trends over time and discusses the difficulty of interpreting crowded line charts.
 
 3. **Penguins — Distributions & Simpson's Paradox**
-
-   * Examines distributions and demonstrates how aggregated data can sometimes lead to misleading conclusions.
+   - Examines data distributions and explores how aggregated data can sometimes lead to misleading conclusions.
 
 4. **Additional Visualization Task**
-
-   * Additional practice applying data visualization principles.
+   - Applies data visualization techniques through practical exercises.
 
 5. **Additional Visualization Task**
-
-   * Additional analysis and visualization practice with written observations.
+   - Provides additional practice in visualization and written analysis.
 
 ### Part 2 — Visual Perception (CLO1)
 
-I attempted all five tasks:
+I attempted all five tasks in this part.
 
 1. **Preattentive Attributes & Visual Search**
-
-   * Explores how visual features such as color, size, and position affect attention and visual search.
+   - Explores how visual features such as color, size, and position influence attention and visual search.
 
 2. **Gestalt Principles of Grouping**
+   - Examines how people perceive groups and relationships through visual organization.
 
-   * Applies Gestalt principles to understand how viewers perceive groups and relationships in visualizations.
-
-3. **Cognitive Load & Data-Ink Ratio**
-
-   * Examines unnecessary visual elements and evaluates the data-ink ratio of visualizations.
+3. **Cognitive Load & the Data-Ink Ratio**
+   - Explores cognitive load and the role of unnecessary visual elements in chart design.
 
 4. **Channel Effectiveness — Measured**
-
-   * Compares visual channels and evaluates their effectiveness for representing quantitative information.
+   - Examines the effectiveness of visual channels for communicating quantitative information.
 
 5. **Capstone — Redesign for the Visual System**
+   - Applies visual perception principles to redesign a visualization for clearer communication.
 
-   * Redesigns a visualization using principles of visual perception and effective communication.
+### Part 3 — Week 3 Data Visualization Tasks
 
-### Part 3 — Data Visualization (Week 3)
+This section contains the practical work completed for the Week 3 Data Visualization assignment.
 
-This section contains my Week 3 Data Visualization assignments, including Python implementations, visualizations, and analysis.
+The notebooks and other assignment files are organized in the `week3/` folder. They contain the implementations, visualizations, and analysis associated with the assigned exercises.
 
-The tasks focus on applying data visualization concepts through practical exercises, exploring different approaches to presenting data, and improving the clarity and effectiveness of visual representations.
-
-**Folder:** `week3/`
-
-The Week 3 work includes:
-- Python-based visualization exercises.
-- Practical implementation of data visualization techniques.
-- Analysis and interpretation of visual results.
-- Additional exercises and experiments included in the assignment.
-
-The completed work is organized in the Week 3 folder for easy access and review.
-
+Specific task names and descriptions can be added here to document the Week 3 work accurately.
 
 ## Repository Structure
+
+The repository is organized by assignment week. The structure below should match the actual folder and file names in the repository.
 
 ```text
 BSAI-7A-Esha-asif-034-DATA-visualtasks/
 │
-├── week1/
-│   ├── task1.ipynb
-│   ├── task2.ipynb
-│   ├── task3.ipynb
-│   ├── task4.ipynb
-│   └── task5.ipynb
+├── Week 1 tasks/
+│   └── Week 1 assignment files
 │
 ├── week2/
-│   ├── task1.ipynb
-│   ├── task2.ipynb
-│   ├── task3.ipynb
-│   ├── task4.ipynb
-│   └── task5.ipynb
+│   └── Week 2 assignment notebooks
 │
+├── week3/
+│   └── Week 3 assignment files
+│
+├── LICENSE
 └── README.md
 ```
 
 ## Tools & Technologies
 
-* Python
-* Jupyter Notebook
-* Pandas
-* NumPy
-* Matplotlib
-* Seaborn
-* Data Visualization techniques
+- Python
+- Jupyter Notebook
+- Pandas
+- NumPy
+- Matplotlib
+- Seaborn
+- Data visualization techniques
 
 ## Learning Objectives
 
-Through these tasks, I practiced:
+Through these assignments, I practiced:
 
-* Selecting appropriate charts for different types of data
-* Understanding distributions and trends
-* Avoiding misleading visualizations
-* Applying visual perception principles
-* Reducing cognitive load
-* Evaluating data-ink ratio
-* Understanding preattentive attributes
-* Applying Gestalt principles
-* Improving visualization design and communication
+- Selecting appropriate charts for different types of data
+- Understanding distributions, patterns, and trends
+- Identifying potentially misleading visualizations
+- Applying preattentive attributes and Gestalt principles
+- Understanding cognitive load and visual perception
+- Evaluating the data-ink ratio
+- Comparing the effectiveness of visual channels
+- Improving visualization design and communication
 
 ## Author
 
-**Esha Asif**
-BSAI — Section 7A
-Roll No. 034
+**Esha Asif**  
+**Roll Number:** 034  
+**Program:** BSAI  
+**Section:** 7A
