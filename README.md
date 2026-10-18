@@ -9,104 +9,99 @@
 
 ## About This Repository
 
-This repository contains my Data Visualization course assignments and practical work. It covers chart selection, data visualization techniques, visual perception, and effective visual communication.
+This repository contains my Data Visualization course assignments and practical work. It covers chart selection, visual perception, data exploration, and effective visual communication.
 
-The repository includes Jupyter notebooks with Python code, visualizations, outputs, and written analysis for the completed tasks.
+The repository includes Jupyter notebooks, Python scripts, datasets, visualizations, and written analysis associated with the course assignments.
 
 ## Tasks Completed
 
 ### Part 1 — Chart Choice & Honest Processing
 
-I attempted all five tasks in this part.
+This part contains five tasks focused on choosing appropriate visualizations and understanding how charts communicate data.
 
-1. **Datasaurus — Why We Visualize**
-   - Demonstrates why visualizing data is important, even when datasets have similar summary statistics.
-
-2. **Gapminder — Trends & the Spaghetti Problem**
-   - Explores trends over time and discusses the difficulty of interpreting crowded line charts.
-
-3. **Penguins — Distributions & Simpson's Paradox**
-   - Examines data distributions and explores how aggregated data can sometimes lead to misleading conclusions.
-
-4. **Additional Visualization Task**
-   - Applies data visualization techniques through practical exercises.
-
-5. **Additional Visualization Task**
-   - Provides additional practice in visualization and written analysis.
+1. **Datasaurus — Why We Visualize:** Explores why visualizing data is important, even when datasets have similar summary statistics.
+2. **Gapminder — Trends & the Spaghetti Problem:** Examines trends over time and the challenges of interpreting crowded line charts.
+3. **Penguins — Distributions & Simpson's Paradox:** Explores data distributions and how aggregated results can sometimes lead to misleading conclusions.
+4. **MPG — Data Visualization:** Applies visualization techniques to explore and communicate patterns in the MPG dataset.
+5. **Flights — Data Visualization:** Uses flight-related data to explore patterns and trends through visualizations.
 
 ### Part 2 — Visual Perception (CLO1)
 
-I attempted all five tasks in this part.
+This part explores visual perception principles and their application to effective chart design.
 
-1. **Preattentive Attributes & Visual Search**
-   - Explores how visual features such as color, size, and position influence attention and visual search.
-
-2. **Gestalt Principles of Grouping**
-   - Examines how people perceive groups and relationships through visual organization.
-
-3. **Cognitive Load & the Data-Ink Ratio**
-   - Explores cognitive load and the role of unnecessary visual elements in chart design.
-
-4. **Channel Effectiveness — Measured**
-   - Examines the effectiveness of visual channels for communicating quantitative information.
-
-5. **Capstone — Redesign for the Visual System**
-   - Applies visual perception principles to redesign a visualization for clearer communication.
+1. **Preattentive Attributes & Visual Search:** Examines how features such as color, size, and position influence attention.
+2. **Gestalt Principles of Grouping:** Explores how visual organization helps people identify groups and relationships.
+3. **Cognitive Load & the Data-Ink Ratio:** Examines how unnecessary visual elements affect clarity and interpretation.
+4. **Channel Effectiveness — Measured:** Compares visual channels used to communicate quantitative information.
+5. **Capstone — Redesign for the Visual System:** Applies visual perception principles to improve visualization design.
 
 ### Part 3 — Week 3 Data Visualization Tasks
 
-This section contains the practical work completed for the Week 3 Data Visualization assignment.
+The Week 3 assignment contains practical exercises involving visualization design, evidence, and analysis.
 
-The notebooks and other assignment files are organized in the `week3/` folder. They contain the implementations, visualizations, and analysis associated with the assigned exercises.
-
-Specific task names and descriptions can be added here to document the Week 3 work accurately.
+The `week3/` directory includes the assignment materials, datasets, supporting code, figures, and other relevant deliverables. The assignment files are organised in `week3/assignments/`, while shared data and supporting resources are stored in their respective directories.
 
 ## Repository Structure
 
-The repository is organized by assignment week. The structure below should match the actual folder and file names in the repository.
+The repository is organised by assignment week to keep notebooks, datasets, scripts, and supporting materials easy to locate.
 
 ```text
 BSAI-7A-Esha-asif-034-DATA-visualtasks/
 │
-├── Week 1 tasks/
-│   └── Week 1 assignment files
+├── README.md
+├── LICENSE
+├── .gitignore
+│
+├── week1/
+│   ├── Task1_datasaurus.ipynb
+│   ├── Task2_gapminder.ipynb
+│   ├── Task3_penguins.ipynb
+│   ├── Task4_mpg.ipynb
+│   ├── Task5_flights.ipynb
+│   └── data/
 │
 ├── week2/
-│   └── Week 2 assignment notebooks
+│   └── data/
 │
-├── week3/
-│   └── Week 3 assignment files
-│
-├── LICENSE
-└── README.md
+└── week3/
+    ├── data/
+    ├── starter/
+    ├── vizlib.py
+    └── assignments/
+        ├── Part_A.docx
+        ├── Part_E.docx
+        ├── Python scripts
+        ├── output files
+        └── figures
 ```
+
+*Note: The structure above highlights the main directories. Refer to the repository for the complete list of files. Update this section as additional assignments are added.*
 
 ## Tools & Technologies
 
-- Python
-- Jupyter Notebook
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Data visualization techniques
+- **Python** — Data analysis and visualization
+- **Jupyter Notebook** — Interactive coding, visualizations, and analysis
+- **Pandas** — Data manipulation and analysis
+- **NumPy** — Numerical computing
+- **Matplotlib** — Plotting and visualization
+- **Seaborn** — Statistical data visualization
 
 ## Learning Objectives
 
-Through these assignments, I practiced:
+Through these assignments, I have practiced:
 
-- Selecting appropriate charts for different types of data
-- Understanding distributions, patterns, and trends
-- Identifying potentially misleading visualizations
+- Selecting suitable charts for different types of data
+- Exploring distributions, patterns, and trends
+- Recognising misleading visualizations and understanding honest data presentation
 - Applying preattentive attributes and Gestalt principles
-- Understanding cognitive load and visual perception
-- Evaluating the data-ink ratio
-- Comparing the effectiveness of visual channels
-- Improving visualization design and communication
+- Understanding cognitive load and the data-ink ratio
+- Evaluating the effectiveness of visual channels
+- Improving chart readability and visual communication
+- Organising data visualization projects and their supporting files
 
 ## Author
 
 **Esha Asif**  
 **Roll Number:** 034  
-**Program:** BSAI  
+**Program:** BS Artificial Intelligence (BSAI)  
 **Section:** 7A
