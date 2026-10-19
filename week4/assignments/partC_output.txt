@@ -1,0 +1,57 @@
+==========================================================================
+C.1  THE THREE CONDITIONS, TESTED IN CODE (slide 32)
+==========================================================================
+Condition 1: parts are exclusive.  2: the whole is meaningful.  3: the share is the question.
+
+(a) the four touch_* columns of case08_channel_attrib.csv
+    shares: {'touch_search': 42.62, 'touch_social': 32.3, 'touch_email': 27.48, 'touch_direct': 28.58}
+    sum = 130.98%   exclusive = False   customers in 2+ channels = 1,105 of 4,000 (27.62%)
+    1 exclusive parts ....... FAIL (shares sum to 131%, so a unit sits in several parts)
+    2 meaningful whole ...... the whole is 'customers' - fine, but the parts are not slices of it
+    3 share is the question . 'how many customers does each channel reach?' - that is four separate
+                              percentages of the same 4,000, not one pie
+    VERDICT: NOT a pie. A bar chart of reach per channel (each bar its own % of customers) is legal;
+             a stacked bar or treemap is not, for the same reason as the pie.
+
+(b) the eight rows of shares_eight.csv
+    sum = 100.000000  (assert abs(sum - 100) < 1e-6 passes)
+    every SKU belongs to exactly one sub-category: True
+    the three middle slices are within 3.8 points (C 15.0%, H 13.1%, G 11.2%)
+    1 exclusive parts ....... PASS   2 meaningful whole ... PASS (the eight are all the sub-categories,
+    so the whole is the whole catalogue)   3 share is the question ... PARTLY: the real question is a
+    ranking, and eight slices is twice the 4 +/- 1 chunks a reader holds.
+    VERDICT: legal as a pie, but draw it as a sorted bar chart. Part C.2-C.3 tests exactly that.
+
+(c) premium vs other revenue, case09, 2025Q4
+    premium 228.0 + other 372.0 = 600.0  ->  38.0% + 62.0% = 100.0%
+    1 exclusive parts ....... PASS (other is defined as total minus premium)
+    2 meaningful whole ...... PASS for ONE quarter (all revenue in 2025Q4)
+    3 share is the question . PASS only if the question is 'how much of this quarter is premium'.
+    It FAILS the moment the question is 'is premium growing?': the whole shrank 1,000 -> 600 while premium moved 240 -> 228.
+    VERDICT: a two-slice pie (or one stacked bar) is legal for the single quarter, and a bar is
+             clearer; NEITHER may be used to show a change over time.
+
+saved pie_stimulus.png and bars_stimulus.png at 300 dpi
+
+==========================================================================
+C.2 / C.3  THE EXPERIMENT AND ITS SCORE
+==========================================================================
+True order, largest first: ABCHGDEF  (A 24.6%, B 18.4%, C 15.0%, H 13.1%, G 11.2%, D 9.2%, E 6.1%, F 2.4%)
+Reader: esha 7th semester student
+  pie  said ABHCGDEF     25.7 s   letters in the wrong rank: 2   wrong ranks: [3, 4]   top two right: True   bottom right: True
+  bars said ABCHGDEF      9.1 s   letters in the wrong rank: 0   wrong ranks: none   top two right: True   bottom right: True
+
+Where did the errors fall? The deck predicts: top two and the bottom one right, the middle (C 15.0%,
+H 13.1%, G 11.2%, ranks 3-5) disputed.
+  pie: 2 of 2 wrong ranks are in the predicted middle (ranks 3-5); outside it: none.
+  bars: no errors, so the prediction cannot be tested on this stimulus.
+
+Time: pie 25.7 s, bars 9.1 s (bars faster, 16.6 s apart).
+
+What one reader can and cannot support: this is a single person, tested once on each chart, always pie
+first and bars second. The bars may be faster partly because the reader had just seen the same eight
+letters (a practice effect I could not counterbalance with one reader), and one person's speed and errors
+carry no information about how much they vary between people. It can illustrate the deck's claim; it
+cannot confirm it, and it does not measure how large any pie-versus-bar difference is.
+
+C.4  MY RULE. I will draw a pie only when there are two to four exclusive parts of a whole the reader cares about and the question is 'how much of the whole is this one part'; for a ranking, for five or more parts, or for anything that changes over time, I will draw sorted bars.

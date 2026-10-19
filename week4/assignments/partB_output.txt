@@ -1,0 +1,86 @@
+==========================================================================
+PART B - computed on the cleaned daily session series
+==========================================================================
+529 calendar days, 2024-04-01 to 2025-09-11; 13 unrecorded days are NaN.
+Where a function refuses NaN (seasonal_decompose, lag_at_turn, EWMA) the 13 days are filled by linear interpolation, for that call only, and say so.
+The final month (2025-09) is partial: 11 of 30 days. It is kept in the daily series.
+
+--------------------------------------------------------------------------
+B1. THE WINDOW IS A HYPOTHESIS - tslib.window_report() for 7, 28 and 91
+--------------------------------------------------------------------------
+ window    raw_sd  smoothed_sd  variation_removed_pct  periods_lost_each_end
+      7 6798.9492    4638.5100                   31.8                      3
+     28 6798.9492    4423.5892                   34.9                     14
+     91 6798.9492    4141.7378                   39.1                     45
+
+Is the weekly cycle really what the 7-day window removes? Share of the detrended variation explained by day-of-week:
+   raw daily series  R2 = 0.387      7-day rolling mean  R2 = 0.000
+
+Peak-to-trough of each smoothed line over Jan-Sep 2025 (after Black Friday): 7d 8,854   28d 7,394   91d 5,427
+ANSWER B1. A 7-day window removes 31.8% of the raw standard deviation and costs 3 days at each end. The cycle it cancels is the weekly one: a window exactly one cycle long holds each weekday once, so Saturday's high and Tuesday's low average out. The R2 above shows it - day-of-week explains 39% of the detrended raw series and 0.0% of the 7-day line. A 28-day window is four whole weekly cycles, so it cancels the weekly rhythm too, plus any swing shorter than a month, but it only removes a further 3.1 points of variation for 14 days lost at each end. A 91-day window is a quarter of a year: it adds only 4.2 more points, costs 45 days at each end (about a tenth of the whole series), and flattens the seasonal swing leadership is trying to see (its Jan-Sep 2025 range is 5,427 sessions/day against 8,854 for the 7-day line). I am using 7 days in Part D. The reason is the cycle being cancelled - weekly - and not how smooth the line looks; 7 days does the job and nothing longer buys enough to justify the extra periods lost.
+
+--------------------------------------------------------------------------
+B2. THREE SMOOTHERS AGAINST ONE SPIKE - Black Friday, 29 Nov 2024
+--------------------------------------------------------------------------
+raw value on the day                       113,710
+median of the surrounding fortnight         24,698   (the brief quotes about 24,600)
+14-day centred MEAN                         32,871   (+33% vs fortnight median)
+14-day centred MEDIAN                       24,698   (+0%)
+EWMA, span = 14 (trailing by design)        37,537   (+52%)
+   (an even window has no middle day; pandas centres a 14-day window on days t-7 ... t+6.
+    An EWMA has no 'centred' form - it only looks backwards - so it is the trailing member here.)
+
+ANSWER B2. On the day, the raw value is 113,710 against a fortnight median of about 24,698 (the brief says about 24,600; the small difference is just where the fortnight is placed). The mean is dragged up to 32,871 because one huge day in fourteen still carries one-fourteenth of the weight; the EWMA reads 37,537, since it gives the newest day the most weight; the median stays at 24,698, because a single value can never move the middle of fourteen. For a monitoring dashboard I would use the EWMA (or the mean), because there the spike IS the news - an alerting line that quietly ignores a four-fold jump is useless, and the EWMA is also the one that needs no future data. For a quarterly report I would use the median, because the report is about the level of traffic and one sale day should not bend the line; Black Friday then gets its own annotation instead of hiding inside the average.
+
+--------------------------------------------------------------------------
+B3. DECOMPOSE IT - seasonal_decompose, additive
+--------------------------------------------------------------------------
+period = 7. Weekly seasonal component, by weekday of the first seven days (Mon, Tue, Wed, Thu, Fri, Sat, Sun):
+   Mon -2,226  Tue -2,224  Wed -2,338  Thu -2,184  Fri -1,016  Sat +4,975  Sun +5,013
+peak-to-trough amplitude of the weekly component: 7,352 sessions/day
+three largest |residuals| (interpolated days excluded):
+   2024-11-29 (Fri)   residual +75,072
+   2024-11-30 (Sat)   residual -13,527
+   2024-11-28 (Thu)   residual -12,926
+
+period = 365 -> statsmodels says: ValueError: x must have 2 complete cycles requires 730 observations. x only has 529 observation(s)
+ANSWER B3. The weekly component swings 7,352 sessions/day from its lowest weekday to its highest (Saturday and Sunday sit about 6,992 above the weekday average). The largest residual is 2024-11-29, Black Friday, at +75,072: once the trend and the weekly rhythm are taken out, nothing explains that day, which is exactly why it is the one to investigate. The next largest residuals (2024-11-30, 2024-11-28) are its immediate neighbours and are mostly an echo - the 7-day trend component absorbs part of the spike and spreads it across the days around it. I could not complete the period=365 run: statsmodels refuses, because it needs two complete cycles (730 days) and this series has 529. What would move, given enough data, is anything that repeats once a year - the November sale surge and the holiday ramp - which sit in `resid` and `trend` at period=7 and would be learned as `seasonal` at period=365. With a single November on file there is no second one to confirm it, so even a workaround would be fitting noise.
+
+--------------------------------------------------------------------------
+B4. TRAILING OR CENTRED - tslib.lag_at_turn(), 31-day window
+--------------------------------------------------------------------------
+turning point (minimum of the smoothed line): trailing 2024-05-30, centred 2024-05-15
+lag = 15 days; half the window = 15 days
+   check with window  7: lag  3 days (half-window 3)
+   check with window 15: lag  7 days (half-window 7)
+   check with window 61: lag 30 days (half-window 30)
+ANSWER B4. The trailing mean finds the turn 15 days after the centred one, and half of 31 is 15: the lag is the half-window, to the day. It is arithmetic rather than a fault - a trailing window cannot know a turn has happened until enough post-turn days have entered it. A dashboard that refreshes every morning only has data up to yesterday, so a centred window is impossible there (it needs days that have not happened yet) and it must show the trailing mean. Its caption has to say so: '31-day trailing mean - turning points show up about 15 days after they happen.' A centred line can replace it later, once the future days exist.
+
+--------------------------------------------------------------------------
+B5. THE WINDOW IS A CLAIM - 12 start months x 5 window lengths
+--------------------------------------------------------------------------
+combinations tried: 12 x 5 = 60  (skipped for too few recorded days: 0)
+slopes (sessions/day per day), fitted by least squares to the RAW daily values:
+              7      14     28    56     91
+Apr 2024   676.0  270.0   69.0   8.0   17.0
+May 2024   315.0   25.0   16.0  21.0   42.0
+Jun 2024 -1017.0 -194.0  -44.0  33.0   57.0
+Jul 2024   982.0  274.0  105.0  84.0   83.0
+Aug 2024  -212.0   84.0   40.0  74.0   74.0
+Sep 2024   -60.0   64.0   89.0  68.0  124.0
+Oct 2024   683.0  233.0  114.0  67.0   74.0
+Nov 2024  -722.0  -76.0  -18.0  30.0  -19.0
+Dec 2024  -118.0   -0.0   23.0 -11.0  -34.0
+Jan 2025  -230.0  -37.0  -23.0 -47.0  -52.0
+Feb 2025 -1571.0 -506.0 -146.0 -71.0  -53.0
+Mar 2025 -1207.0 -300.0 -141.0 -73.0  -31.0
+
+RISING: 32     FALLING: 28
+starts Apr-Oct 2024: 30 of 35 rise;  starts Nov 2024-Mar 2025: 2 of 25 rise
+median |slope|, 7-day windows vs 91-day windows: 13x
+by window length (rising / falling): 7d 4/8   14d 6/6   28d 7/5   56d 8/4   91d 7/5
+
+ANSWER B5. On one unchanged series, 32 of the 60 start-and-window combinations produce a rising trend and 28 produce a falling one. The short windows are the least stable: the 7-day slopes are about 13 times the size of the 91-day ones, which means a 7-day fit mostly measures where in the weekly cycle it happened to start. And the start month matters because the series has a seasonal shape - 30 of 35 fits that start between April and October 2024 rise, against only 2 of 25 that start from November onwards. Anyone could pick a row of this table and call it 'the trend'.
+Why the Lie Factor cannot be computed for a cherry-picked window: the formula is (effect shown) / (effect in the data), and it assumes the data effect exists independently of the picture - one agreed start and one agreed end. A chosen window is both: the 'effect in the data' is measured from the same two endpoints the chart shows, so numerator and denominator are the same number and the Lie Factor is 1.0 by construction, even when the chart is misleading. The lie is in which window was chosen, not in how the ink is scaled to it. The honest substitute is to report the spread: show the full series, say how many of the combinations rise and how many fall (32 / 28 here), or the range of slopes, so the reader can see how much the choice matters. That is what the table above does.
+
+saved partB_windows.png at 300 dpi

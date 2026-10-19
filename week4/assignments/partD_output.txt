@@ -1,0 +1,105 @@
+==========================================================================
+PART D - data audit, in the order the brief says to run it
+==========================================================================
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 12670 entries, 0 to 12669
+Data columns (total 5 columns):
+ #   Column       Non-Null Count  Dtype 
+---  ------       --------------  ----- 
+ 0   ts           12670 non-null  object
+ 1   sessions     12670 non-null  int64 
+ 2   orders       12670 non-null  int64 
+ 3   revenue_pkr  12670 non-null  int64 
+ 4   device       12670 non-null  object
+dtypes: int64(3), object(2)
+memory usage: 495.1+ KB
+
+df.describe().T
+               count           mean            std      min      25%       50%        75%        max
+sessions     12670.0     947.951381     646.882994     -1.0    435.0     756.0    1368.00     9811.0
+orders       12670.0      30.016732      20.089492      4.0     14.0      24.0      42.00      304.0
+revenue_pkr  12670.0  132564.968824  100150.706234  10350.0  58036.5  102359.0  182232.25  1652881.0
+
+df.shape                          (12670, 5)
+df.ts.head(10)                    ['2024-04-29 11:00:00', '2024-10-26 05:00:00', '2025-08-04 20:00:00', '2024-10-05 19:00:00', '2025-01-22 20:00:00', '05/10/2024 09:00', '2024-08-11 15:00:00', '12/04/2025 10:00', '2024-07-24 02:00:00', '2025-03-27 11:00:00']
+device value_counts (raw)         {'Mobile': 6994, 'Desktop': 3452, 'mobile': 883, 'Tablet': 777, 'desktop': 318, 'MOBILE ': 246}
+sessions min / max (raw)          -1 / 9811
+
+The six faults and the rule applied to each
+--------------------------------------------------------------------------
+1. TWO TIMESTAMP FORMATS. 9,019 rows are ISO (2024-04-29 11:00:00),
+   3,651 are dd/mm/yyyy hh:mm. Day-first PROVED: 2,151 slash rows have a first field above 12,
+   0 have a second field above 12. So the slash rows are day-first.
+   Rule: parse each format with its own explicit format string.
+   pd.to_datetime(format='mixed') would also parse every row and lose none,
+   but it reads the ambiguous slash dates month-first: the series would run 2024-01-04 -> 2025-12-08
+   instead of the true 2024-04-01 -> 2025-09-11, and move 1,382 rows to the wrong day.
+2. NOT SORTED. Sorted on arrival: False. Rule: sort_index() once, after parsing.
+3. DUPLICATE HOURS. 286 rows repeat an hour already present (one in one format, one in the other).
+   All 286 are identical in every value (0 conflicting). Rule: drop the repeat, keep the first.
+4. DEVICE SPELLED SIX WAYS (three devices): {'Mobile': 6994, 'Desktop': 3452, 'mobile': 883, 'Tablet': 777, 'desktop': 318, 'MOBILE ': 246}
+   Rule: strip + lower-case -> {'mobile': 7942, 'desktop': 3681, 'tablet': 761}.
+5. SENTINEL -1 in sessions: 290 raw rows (287 after de-duplication, on 222 different days).
+   Rule: set to NaN, never to 0. Mean sessions/hour moved 946.94 -> 969.43.
+   Daily sums are made from the hours that were recorded; 222 days have 1-3 dropped hours, so those days read a
+   little low (one hour is ~4% of a day). Not filled; flagged here instead.
+6. MISSING PERIODS. Counted on the HOURLY index before resampling: 12,696 hours expected, 12,384 present,
+   312 missing = 13 whole days (every one of them all 24 hours: True).
+   Days: 2024-05-18, 2024-07-02, 2024-07-03, 2024-09-27, 2024-11-11, 2024-12-25, 2025-01-01, 2025-02-14, 2025-03-30, 2025-03-31, 2025-06-07, 2025-07-19, 2025-08-23
+   Rule: reindex to a complete calendar; those days stay NaN and the line breaks.
+   (resample('D') alone would NOT have shown them - it invents the rows.)
+   PARTIAL FINAL MONTH: 2025-09 holds 11 of 30 days (to 2025-09-11). Kept, but marked on panel 1.
+
+tslib.audit_index(hourly, 'h')  [the real gap check]  dtype_ok=True, monotonic=True, n_duplicated=0,
+   n_missing=312 hours, partial_tail=False  (tail = 2025-09-11, 24 hours)
+daily series: 529 calendar days, 13 of them NaN. (audit_index on the daily series reports 0 missing, because resample()
+   has already built the full calendar - which is exactly why the gap count has to come from the hourly index.)
+
+==========================================================================
+PART D - catalogue (revenue_catalogue.csv)
+==========================================================================
+Rows in file: 345.  Hierarchy checks: every sub-category has exactly one parent (0 with two).
+DUPLICATE SKU: 1 row repeated (SKU-0127, named AUDI-04) - it appears under Audio AND under Wearables,
+   so the tree had a leaf with two parents. Rule: keep the Audio copy (its name prefix is AUDI); drop the Wearables copy.
+   After this, sku_name prefix matches sub-category on every row (0 mismatches).
+NEGATIVE NET REVENUE: 7 SKUs, together PKR -1.07m. Negatives have no area.
+   Rule: kept out of the treemap and the bars, listed here and footnoted on the figure.
+      SKU-0344  FOOT-39  Footwear    net -0.4873
+      SKU-0299  WEAR-47  Wearables   net -0.3039
+      SKU-0335  FOOT-30  Footwear    net -0.1376
+      SKU-0233  DRON-18  Drones      net -0.0617
+      SKU-0242  DRON-27  Drones      net -0.0519
+      SKU-0272  WEAR-20  Wearables   net -0.0268
+      SKU-0058  ACCE-18  Accessories net -0.0001
+   1 SKU has net exactly 0 and so no area either.
+   Net revenue total moved 1,711.38 -> 1,712.45 (PKR m); SKUs drawn: 336.
+DEPTH: 336 SKUs are rolled up into 8 sub-categories under 4 categories. No 'Other' bucket was needed - all 8 are drawn.
+
+Self-check against shares_eight.csv (percentage points):
+   Phones       mine  24.75   file  24.6   diff +0.15
+   Laptops      mine  18.22   file  18.4   diff -0.18
+   Audio        mine  14.98   file  15.0   diff -0.02
+   Wearables    mine   9.36   file   9.2   diff +0.16
+   Cameras      mine   5.97   file   6.1   diff -0.13
+   Drones       mine   2.41   file   2.4   diff +0.01
+   Footwear     mine  10.99   file  11.2   diff -0.21
+   Accessories  mine  13.33   file  13.1   diff +0.23
+   largest gap 0.23 points (Accessories) - the brief's limit is 0.3
+
+Treemap blocks too small for a printed label: none (values are on panel 4)
+
+Panel 1 is drawn 5.7 x 3.6 in (aspect 1.57:1). banked_figsize() for this series asks for 5.7 x 3.1 in (1.8:1);
+   The 2x2 grid fixes the shape, so the aspect is a layout choice, not a banked one - it happens to sit close to the banked ratio. Stated here and on the figure.
+
+saved partD_figure.png at 300 dpi
+
+Direction check for the appendix (Part E):
+   fitted slope of the smoothed line  7-day +21.1 sessions/day per day,  28-day +19.7
+   year-on-year on matched dates, Apr-Aug: 7-day line +45.2% (114 paired days);  28-day line +45.9% (27 paired days)
+   (raw daily mean, all days: +44.3%; the smoothed lines differ because a centred window cannot be drawn within half a window of an unrecorded day)
+   same direction under both windows: True
+   interior NaNs in the 7-day line (gaps breaking it): 79 days around the 13 unrecorded days
+   7-day line is undefined for the first and last 3 days (centred window).
+
+done.

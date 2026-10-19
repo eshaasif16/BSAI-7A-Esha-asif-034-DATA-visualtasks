@@ -1,0 +1,34 @@
+==========================================================================
+PART F - is the seasonality growing, or is the series?
+==========================================================================
+File: unemployment-across-industries.json, 1,708 rows, 14 industries x 122 months. Category column: 'series'. Focus: Construction.
+Why Construction: I looked at which industries had a visible winter swing at all (it has the largest) and picked it BEFORE comparing the additive and multiplicative
+models. The code runs unchanged on any of the 14 industries; change CATEGORY to try another.
+`date` carries a time-of-day that shifts with daylight saving ({7: 924, 8: 784} rows at each hour). Rule: ignore it, build the index from year and month.
+tslib.audit_index(freq='MS'): dtype_ok=True, monotonic=True, duplicates=0, missing months=0, span=2000-01-01 to 2010-02-01,
+   partial_tail=True (tail = 2010, 2 of 12 months)
+Rule: 2 rows (Jan-Feb 2010) dropped - a partial final year would distort the cycle plot. n = 120 months, 10 full years.
+
+year   level (annual mean)   swing (max - min)   swing / level
+2000          513               428            0.83
+2001          609               393            0.65
+2002          800               618            0.77
+2003          810               546            0.67
+2004          769               476            0.62
+2005          712               641            0.90
+2006          671               412            0.61
+2007          757               528            0.70
+2008        1,030               655            0.64
+2009        1,770               502            0.28
+correlation of yearly swing with yearly level: 0.23
+swing as a share of level: first 3 years 0.75, last 3 years 0.54
+
+residual spread as % of the level, by thirds of the series (early / middle / late):
+   additive        8.0 / 7.8 / 8.2   (late/early = 1.03)
+   multiplicative  6.8 / 6.5 / 8.9   (late/early = 1.32)
+
+banked_figsize(width=9) -> 9.0 x 1.9 in, aspect 4.7:1. Panel 1 is drawn at exactly that shape (measured on the rendered figure: 4.7:1) and the number is stated on the figure.
+saved partF_cycle.png at 300 dpi
+
+ANSWER. Neither story from flights.csv holds here, and the data say why: the level of the series rose 3.5x (513 to 1,770) but the yearly swing stayed in the same band (428 in 2000, 502 in 2009; correlation of swing with level only 0.23), so swing as a share of the level FELL from 0.75 to 0.54. The additive residual's spread is the steadier one (late/early 1.03 against 1.32), so the seasonality is a roughly constant number of people, not a share of a growing total - the opposite of the airline-passenger result, and reported as it came out.
+Caveat: the 2008-09 recession pushes the level up sharply in the last two years, so 'level' there is partly a one-off shock, not steady growth; this is one industry in one country.

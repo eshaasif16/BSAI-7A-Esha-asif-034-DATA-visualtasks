@@ -1,0 +1,83 @@
+{
+ "1": {
+  "title": "Orders peak in Q1 and collapse every year - a clear annual cycle",
+  "file": "case01_orders_stringdate.csv",
+  "selfcheck": "24 points; drops of 958 and 978 - matches the brief.",
+  "conclusion": "Orders have a strong annual rhythm: they build up and then crash at the turn of each year.",
+  "decoy": "My first thought was a genuine seasonal slump, with a different mix of riders or a different branch in the quiet months. It doesn't hold: the branch column has 1 value (it is constant), and once the months are in real calendar order there are 0 falling months out of 23. The smallest month-on-month change is a rise of 59 orders and the largest 124. A seasonal slump would have to show up as at least one fall.",
+  "mechanism": "The month column is text written YYYY-M with no zero padding, so sorting it sorts characters, not dates: '2024-1' is followed by '2024-10', '2024-11', '2024-12' and only then '2024-2'. The first six x positions are 2024-1, 2024-10, 2024-11, 2024-12, 2024-2, 2024-3. December 2024 therefore lands in fourth place, directly before February 2024, which is where the 'collapse' of 958 orders comes from (5,259 down to 4,301); the same thing happens a year later (978). Parsed as dates, the number of falling steps goes from 2 to 0, and orders grow 52.5% from 4,200 to 6,405 over the 23 months.",
+  "redesign": "The same line chart on a real date axis (month parsed with format='%Y-%m'), y from zero. It is a straight, steady climb with no annual cycle."
+ },
+ "2": {
+  "title": "Sales grew steadily, 22%, across the quarter",
+  "file": "case02_shop_closed.csv",
+  "selfcheck": "69 points, first 207, last 253, +22% - matches.",
+  "conclusion": "The shop's sales climbed at a steady pace through January, February and March.",
+  "decoy": "The obvious objection is that the 69 rows over a 90-day quarter are just the shop's regular days off (say closed Sundays), so the row number would be close enough to the date. The calendar says otherwise. The 21 missing days are one continuous closure, 03 February to 23 February (contiguous: True), and nothing else is missing: all 33 days before it and all 36 days after it are recorded (0 missing days outside the block). A regular weekly closure would leave a gap every seven days across the whole quarter, not a single three-week block. (Counting how often each weekday is missing would not prove this by itself - a 21-day block hits every weekday three times whatever the cause - so the contiguity is the evidence.)",
+  "mechanism": "Plotting against range(len(df)) deletes the closure: the 21 closed days are not on the axis at all, so the shop looks as if it traded 69 days in a row. Before the closure the 33 trading days average 196k and are, if anything, drifting down (-0.16k per day). After it the 36 days average 252k - a step of +28.6% that happened across the gap. The straight trend line smooths that step into a ramp: it reads 1.23k per row against 0.90k per real day, 37% too steep.",
+  "redesign": "Real dates on the x axis with the closure left as an empty, labelled block, the line broken there, and the two trading stretches shown with their means. Flat, then a step - not a ramp."
+ },
+ "3": {
+  "title": "Peak load jumped 43% overnight on 1 July",
+  "file": "case03_bandwidth_levels.csv",
+  "selfcheck": "June daily mean 8,782, July 12,543, +43% - matches.",
+  "conclusion": "Demand for the service stepped up by about 43% on 1 July (a launch, a campaign, a new customer).",
+  "decoy": "The first thing I checked was whether the jump is real, because the other column, bytes_served, jumps by almost exactly the same amount when summed daily (+42.7%) - which looks like confirmation. It isn't: both columns are being added up over a different number of recorded hours. Per recorded hour, bytes change by -2.3%, not +43%.",
+  "mechanism": "concurrent_users is a level - how many people are connected at an instant - so adding it up over a day counts observations, not users. June is missing 227 of its 720 hours (an average of 16.4 recorded hours a day), while July is complete (24 a day). The 'jump' lands exactly on 1 July because that is when the logging became complete. Per recorded hour, users went from 534 to 523 (-2.2%); comparing the same hours of the day it is -0.1%. A level should be resampled with mean() (or max()), never sum().",
+  "redesign": "Two stacked panels sharing the date axis (no dual axis): the daily mean of concurrent users per recorded hour, flat across 1 July; and the number of hours logged per day, which is what actually stepped."
+ },
+ "4": {
+  "title": "The new checkout flow started working on 7 September",
+  "file": "case04_intervention_lag.csv",
+  "selfcheck": "trailing 31-day mean bottoms out on 2025-09-07 - matches.",
+  "conclusion": "Conversion only started to recover on 7 September, so the new flow took effect then.",
+  "decoy": "My first objection was that maybe the new flow really did take weeks to bite - an adoption delay - so 7 September could still be right. The data rules it out: if the delay were real it would not depend on the smoother, but it does, and by exactly the same arithmetic every time. The trailing minimum arrives 3 days after the centred one with a 7-day window (half-window 3), 7 with 15 (half 7), 15 with 31 (half 15) and 30 with 61 (half 30).",
+  "mechanism": "A trailing mean at day t averages days t-30 to t, so it cannot register a turn until enough post-turn days are inside the window. The centred 31-day mean bottoms out on 23 Aug and the centred 7-day mean on 26 Aug. A piecewise-linear trend fitted to the raw series puts its estimated break at 28 Aug - that is where a fitted line changes slope, an estimate and not proof of the day the new flow began working (the file contains no launch date). Together they place the turn in late August. The trailing 31-day mean only bottoms out on 07 Sep, 15 days after the centred minimum, which is the half-window lag - so the 7 September on the chart comes from the smoothing and does not tell us when the effect began.",
+  "redesign": "Raw in grey with both the centred and the trailing 31-day mean, their minima marked, and the 15-day gap labelled. The honest statement is 'late August' - an estimate from the smoothed and fitted series, not an exact date - and the chart says which window it used."
+ },
+ "5": {
+  "title": "Revenue has fallen for six straight months",
+  "file": "case05_revenue_window.csv",
+  "selfcheck": "7 points, 158.8 down to 92.2, -41.9% - matches.",
+  "conclusion": "The business is in a steep, sustained decline.",
+  "decoy": "There are two tempting objections. 'The axis is truncated' - it isn't; the recipe starts at zero. 'Seven points is too few' - that is not the real problem either: more months from the same stretch would still run from peak to trough, and the 6 consecutive month-on-month falls are genuine. What matters is which seven months were picked and what the same months do in other years; the file has 36 months to compare against.",
+  "mechanism": "The seven months run from a seasonal peak to a seasonal trough. In every one of the three years the high is in May or June (month 6, 5, 5) and the low is November (month 11, 11, 11). Comparing the same May-to-November window across the years, the fall is -42.4% in 2023, -42.8% in 2024 and -41.9% in 2025 - about the same every year, so 2025's fall is the usual seasonal one. Meanwhile 2025 is +7.7% above 2024 in May and +9.2% in November, and the full-year total is +9.9%.",
+  "redesign": "The same May-to-November window drawn for all three years on one axis, y from zero. The 2025 line has the same shape as 2023 and 2024 (a fall of about 42%) and sits above both."
+ },
+ "6": {
+  "title": "Orders collapsed in October",
+  "file": "case06_monthly_partial.csv",
+  "selfcheck": "10 bars; September 10,805, October 4,041 (37% of it) - matches.",
+  "conclusion": "Something went badly wrong in October: orders fell by nearly two-thirds.",
+  "decoy": "The natural objection is a real operational shock (a stock-out, an outage) - a 63% fall would be a real incident. The daily rows say otherwise: the lowest single October day is 347 orders, against a September average of 360 a day. There is no day that looks like a collapse.",
+  "mechanism": "The extract was taken on 2025-10-11, so October has 11 of its 31 days, and resample('MS').sum() adds up whatever it finds. Per day, October averages 367 against 360 in September, and 367 is the highest rate of any month in the file (previous best 360). Like for like, the first 11 days of October (4,041) against the first 11 of September (3,975) is +1.7%.",
+  "redesign": "Orders per trading day by month (a rate, so months of different length compare), with October hatched and labelled '11 days only'."
+ },
+ "7": {
+  "title": "Product D has been erratic since mid-2024",
+  "file": "case07_stacked_products.csv",
+  "selfcheck": "stacked envelope runs 548 to 709 - matches (about 548 to 709).",
+  "conclusion": "Product D, the top band, has become unstable in the second half of the series.",
+  "decoy": "The first objection is that D really did become erratic and the chart is just showing it. So I looked at D by itself: it varies by 3.5% of its mean (sd 3.6 on a mean of 100), moves 1.6 a month on average, and its month-on-month volatility is 2.3% before July 2024 and 1.7% after - no change.",
+  "mechanism": "In a stacked area each band's edges are cumulative sums, so a band floats on everything beneath it. D sits on top of A+B+C, and that baseline moves 36.7 a month on average, because Product B is wild (sd 35.6, 34.8 a month; month-to-month changes of the baseline and of B correlate at 0.98). D's own thickness changes 1.6 a month. The eye reads D's wobbling upper edge as D's shape, but that edge is B's volatility passed upward. The column the recipe never isolates is product_b.",
+  "redesign": "Unstack it: the four products as separate lines on one shared axis, from zero, labelled directly. D is nearly flat; B is the erratic one."
+ },
+ "8": {
+  "title": "Paid search drives 43% of our customers",
+  "file": "case08_channel_attrib.csv",
+  "selfcheck": "search 42.6%, social 32.3%, email 27.5%, direct 28.6% - matches.",
+  "conclusion": "Paid search is the single biggest source of customers, bringing in roughly 43% of them.",
+  "decoy": "I wondered whether weighting by revenue would sort out the arithmetic. It doesn't: the revenue-weighted shares are search 43.4%, social 31.5%, email 27.4%, direct 28.7% and they add to 131.0%. Nor is it duplicate rows: all 4,000 customer ids are unique.",
+  "mechanism": "The four shares sum to 131.0%, and the first thing to do with a set of shares is add them. The columns are 'touched by this channel at any point', not 'came from this channel', so they overlap: 1,105 of 4,000 customers (27.6%) were touched by two or more channels (exclusive: False). The parts therefore cannot be mutually exclusive slices of one whole (slide 32's first condition), and a pie chart is inappropriate for these overlapping categories. matplotlib hides this by normalising the slices: search is labelled 42.6% but drawn as 32.5% of the circle. Only 25.9% of customers were touched by search alone.",
+  "redesign": "Horizontal bars of 'reached by this channel', each split into 'this channel only' and 'this and at least one other', with the 131% total stated. Same data, but the overlap is now visible."
+ },
+ "9": {
+  "title": "Premium is now 38% of revenue - a record",
+  "file": "case09_premium_share.csv",
+  "selfcheck": "share rises from 24.0% to 38.0% - matches.",
+  "conclusion": "Premium is growing and has taken over a record share of the business.",
+  "decoy": "I rechecked the arithmetic first, in case the share was miscomputed: 228.0 / 600 = 38.0%. It is right. The chart isn't lying about the share; it is silent about what the share is a share of.",
+  "mechanism": "Premium revenue did not grow. It went from 240.0 to 228.0 (-5.0%) - highest in 2024Q1 and about 228 since 2024Q4 - while total revenue went from 1,000 to 600 (-40%), and everything that is not premium fell 51%. The share rose because the denominator collapsed, not because the numerator grew: the numerator actually fell slightly. This is the chart that is incomplete, not wrong.",
+  "redesign": "The same share line, with the two absolute series beside it: premium revenue and total revenue in PKR m, y from zero. 'Record share' sits next to 'falling business'."
+ }
+}
