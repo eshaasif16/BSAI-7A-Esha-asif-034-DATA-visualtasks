@@ -1,6 +1,6 @@
 # Data Visualization Tasks
 
-This repository contains my assignments, practical work, and experiments for the **Data Visualization** course as part of my Bachelor of Science in Artificial Intelligence (BSAI) degree. The work covers visual perception, chart interpretation, misleading visualizations, statistical plotting, and the design of clear and accurate data visualizations using Python.
+This repository contains my assignments, practical work, and experiments for the **Data Visualization** course as part of my Bachelor of Science in Artificial Intelligence (BSAI) degree. The coursework covers visual perception, chart interpretation, misleading visualizations, statistical plotting, data analysis, and the design of clear and accurate visualizations using Python.
 
 ## Student Information
 
@@ -12,18 +12,18 @@ This repository contains my assignments, practical work, and experiments for the
 
 ## About This Repository
 
-The repository contains coursework completed across different weeks of the Data Visualization course. Each week's work focuses on different aspects of understanding, analysing, creating, and evaluating visualizations.
+This repository contains coursework completed across different weeks of the Data Visualization course. Each week's work focuses on understanding, creating, analysing, and evaluating visualizations.
 
-The assignments include working with datasets, writing Python code, generating charts, interpreting results, identifying misleading representations, and improving visual communication.
+The assignments involve working with datasets, writing Python code, generating charts, interpreting results, identifying misleading representations, and improving visual communication through appropriate design choices.
 
-## Course Work
+## Coursework
 
 ### Week 1 — Introduction to Data Visualization
 
 The initial tasks focus on understanding how visualizations communicate information and how visual design affects the way people interpret data.
 
 Topics include:
-- Understanding basic visualization principles.
+- Understanding fundamental visualization principles.
 - Exploring how chart design influences interpretation.
 - Recognizing patterns and relationships in data.
 - Applying visual perception principles to chart design.
@@ -54,22 +54,20 @@ Topics include:
 
 ### Week 4 — Chart Analysis and Visualization Design
 
-Week 4 focuses on analysing misleading charts, evaluating visual distortion, testing colour palettes, and communicating findings through appropriate visualizations.
+Week 4 focuses on evaluating visualization quality, identifying misleading representations, comparing chart formats, cleaning data, and communicating analytical findings.
 
-The assignment includes the following parts:
+The coursework is divided into six parts:
 
 | Part | Focus |
 |---|---|
-| **Part A** | Diagnosing misleading charts by examining the data, identifying the underlying issue, and suggesting suitable redesigns. |
-| **Part B** | Calculating and interpreting Lie Factors to evaluate how accurately a chart represents changes in the data. |
-| **Part C** | Conducting a practical comparison of chart formats and recording ranking results. |
-| **Part D** | Completing the assigned visualization task and evaluating the resulting figure. |
-| **Part E** | Preparing written justification for visualization design decisions. |
-| **Part F** | Completing the final assigned analysis or visualization task. |
+| **Part A** | Diagnosing misleading charts, examining their underlying data, identifying design issues, and producing suitable redesigns. |
+| **Part B** | Calculating and interpreting Lie Factors to evaluate the relationship between visual distortion and changes in the underlying data. |
+| **Part C** | Comparing pie charts and bar charts for representing proportions and rankings, recording reading results, and discussing the limitations of the comparison. |
+| **Part D** | Cleaning and validating time-series data, handling mixed timestamp formats, duplicate records, missing observations, invalid values, and inconsistent categories before creating visualizations. |
+| **Part E** | Preparing a written justification of visualization design decisions, supported by data analysis and relevant evidence. |
+| **Part F** | Analysing seasonal patterns in monthly time-series data and comparing additive and multiplicative approaches to seasonal decomposition. |
 
-The Week 4 work emphasizes evidence-based analysis rather than relying on the appearance of a chart alone. It also considers the importance of accurate comparisons, suitable visual encodings, accessibility, and clear explanations.
-
-*Note: The descriptions of Parts D and F should be checked against the final assignment instructions before this README is submitted.*
+The Week 4 assignments emphasize evidence-based visualization decisions. They consider chart accuracy, appropriate visual encodings, data quality, readability, and the limitations of analytical conclusions.
 
 ## Tools and Technologies
 
@@ -93,7 +91,7 @@ The assignments generally follow these steps:
 4. Implement the solution in Python.
 5. Generate and inspect the resulting figures.
 6. Interpret the results using evidence from the data.
-7. Improve the visualization or explanation where necessary.
+7. Document findings, limitations, and design decisions where required.
 
 ## Repository Structure
 
@@ -104,18 +102,21 @@ BSAI-7A-Esha-asif-034-DATA-visualtasks/
 │
 ├── README.md
 ├── LICENSE
+├── .gitignore
 │
-├── Week 1 tasks/
-│   └── Week 1 assignment files
+├── week1/
+│   ├── Assignment notebooks
+│   └── Supporting datasets
 │
 ├── week2/
-│   └── Week 2 assignment files
+│   └── Week 2 coursework
 │
 ├── week3/
 │   ├── assignments/
-│   └── Week 3 assignment files
+│   └── Week 3 coursework and supporting files
 │
 └── week4/
+    ├── README.md
     └── assignments/
         ├── Part A files
         ├── Part B files
@@ -128,7 +129,7 @@ BSAI-7A-Esha-asif-034-DATA-visualtasks/
         └── supporting scripts and reports
 ```
 
-The structure above is a simplified overview. Individual folders may contain additional datasets, Python scripts, notebooks, figures, reports, and supporting files.
+This is a simplified overview of the repository. Individual folders may contain additional datasets, Python scripts, notebooks, figures, reports, and supporting files.
 
 ## Learning Objectives
 
@@ -139,8 +140,10 @@ Through these assignments, I have worked on developing my ability to:
 - Interpret patterns, distributions, and relationships.
 - Identify misleading visualizations and potential sources of distortion.
 - Use Python libraries to create and customize figures.
+- Clean and validate data before visualization.
 - Evaluate visualizations using numerical evidence where appropriate.
-- Communicate analytical findings clearly.
+- Analyse time-series trends and seasonal patterns.
+- Communicate analytical findings and limitations clearly.
 - Consider accessibility and readability when designing charts.
 
 ## Author
