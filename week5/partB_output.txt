@@ -1,0 +1,68 @@
+
+==========================================================================
+B1  The size range (health_indicators.csv)
+==========================================================================
+I use area = 12 pt^2 per million people, i.e. sizes=(7.2, 4,241) in points^2.
+  (matplotlib's s is the marker's diameter squared, so diameter = sqrt(s) points; area is proportional to s.)
+  smallest mark: 0.6 M -> 7.2 pt^2 -> diameter 2.68 pt = 0.95 mm. About 1 mm is the smallest dot I trust to survive print.
+  largest mark : 353.4 M -> 4,241 pt^2 -> diameter 65.1 pt = 0.90 in
+  population ratio 589x -> AREA ratio 589x -> DIAMETER ratio 24.3x  (= sqrt of 589)
+  area vs radius: if population drove the RADIUS the diameter ratio would be 589x and the area ratio 346,921x. I used area, so it is 24.3x.
+  Lie Factor of the size channel (ink = area): 1.00 -> honest
+  swallow test: centres of other marks inside the largest bubble (Wessant): 8 ['Belmara', 'Tevrany', 'Xanthos', 'Ystrad', 'Greyholm', 'Quenvar', 'Yelvora', 'Gorlanth']
+  candidate scales (area = k pt^2 per million), smallest dot vs neighbours under the biggest bubble:
+    k= 8: smallest dot 0.77 mm, largest 0.74 in, 7 other centres inside the largest bubble
+    k=10: smallest dot 0.86 mm, largest 0.83 in, 7 other centres inside the largest bubble
+    k=12: smallest dot 0.95 mm, largest 0.90 in, 8 other centres inside the largest bubble
+    k=14: smallest dot 1.02 mm, largest 0.98 in, 9 other centres inside the largest bubble
+    k=16: smallest dot 1.09 mm, largest 1.04 in, 14 other centres inside the largest bubble
+  I keep k=12: it is the smallest k whose 0.6 M dot is ~1 mm across, and the biggest bubble stays under an inch. The largest bubble does overlap neighbours (alpha 0.62 keeps them visible), and the size legend carries real populations.
+
+==========================================================================
+B2  Overplotting (scatter_dense.csv, 9,000 points)
+==========================================================================
+points within 0.5 of (3.1, 3.0): 709  (the planted cluster is 800)
+view          peak ink: cluster  peak ink: core  cluster/core   reading
+opaque                      158             158          1.00   same ink as the core: cannot tell it is denser
+transparent                 126             122          1.03   same ink as the core: cannot tell it is denser
+hexbin                      196             147          1.34   reads DENSER than the core
+KDE                         139             189          0.74   reads WEAKER than the core (smoothing)
+In all four views the cluster shows up as a separate blob, because it sits clear of the main mass. Whether the picture also tells you it is the densest thing in the data differs by view - see the last column.
+I would publish: hexbin (gridsize=35) with a colourbar of counts per bin: the reader can read how many points a cell holds, and there is no smoothing bandwidth to defend. alpha=0.06 shows presence but the reader cannot recover counts; the KDE needs a bandwidth I would have to declare and, at the default, it flattens the compact cluster.
+
+==========================================================================
+B3  Scaling and dimension reduction (health_indicators.csv)
+==========================================================================
+gdp_pc: min 283  median 2,366  max 120,219; max is 9.2x the second largest
+scaling        min   median      max  # |scaled|<0.10   what it did to the gdp_pc axis
+minmax       0.000    0.017    1.000               58   58 of 60 crushed into the bottom tenth; one outlier sets the whole scale
+zscore      -0.362   -0.225    7.501               11   outlier sits at +7.5 sd, the other 59 live between -0.4 and +0.5; shape kept, still outlier-dominated
+rank         0.017    0.508    1.000                5   uniform by construction; the outlier is just 'rank 60'; gap sizes are gone
+PCA on the standardised columns, explained variance ratio: PC1=0.675, PC2=0.162, PC3=0.077, PC4=0.065, PC5=0.022
+first two components: 0.837 -> a two-axis picture of this dataset misses 16.3% of its variance.
+loadings of PC1: gdp_pc=+0.32, healthcare_access=+0.51, urban_pct=+0.46, median_age=+0.45, cases_per_100k=-0.47
+
+==========================================================================
+B4  Project before you measure (districts.geojson)
+==========================================================================
+four northernmost districts (by mean vertex latitude): ['D21', 'D22', 'D19', 'D24']
+  share of total area, spherical (correct) : 10.51%
+  share of total area, shoelace on degrees : 11.08%  (over-states by +5.5%)
+most distorted single district: D21 (Ushkan) at lat 35.0: true share 2.15%, degree-space share 2.27% (+5.6%)
+Mercator area inflation (projected area / true area): min 1.237 (south) .. max 1.492 (north); whole federation 1.340x
+  so the north is drawn 20.5% larger than the south for the same real land.
+  (Mercator's AREA factor is sec^2(latitude): sec^2(24 deg)=1.20, sec^2(36 deg)=1.53. geolib's docstring says sec(lat), which is the LINEAR scale factor, so I measured the areas directly instead of trusting either.)
+Why that number matters: a choropleth encodes the value in colour AND in the district's drawn area. Mercator draws every district 1.24-1.49x too big and the north 21% bigger than the south, so the northern districts shout louder for the same real land. Only an equal-area projection keeps the drawn area honest. (slide 34)
+
+==========================================================================
+B5  Small-area stability (smallarea_cases.csv)
+==========================================================================
+pooled rate 8.72 per 100,000 from 259 cases / 2,970,500 people, 40 units
+units outside the 95% Poisson funnel: 1 of 40 -> ['U32']
+  by chance alone about 5% of 40 = 2 would fall outside, so 1 is fewer than noise alone would give - but the one that does is U32 itself, so I also ran the exact test:
+  exact Poisson check on U32: P(>=9 cases | expected 1.92) = 0.00018; across 40 units ~0.007. The data's own dictionary says the true rate is the same everywhere, so U32 is a rare tail draw, not a hotspot.
+what it tells me about the case 6 map: the extreme ranks are filled by the smallest populations. Of the 10 units furthest from 8.72, 8 have fewer than 50,000 people (the median population of all 40 is 50,000, so about 5 would be expected if size did not matter). The rank correlation between population and distance from the pooled rate is only -0.15, because many small units are also close to the pooled rate; the signature of small numbers is the SPREAD, not the average distance: the standard deviation of the rates is 10.3 for the 13 units under 30,000 people against 2.0 for the 10 units over 100,000. The units over 100,000 all sit between 5.5 and 12.0, while the units under 30,000 range from 0.0 to 40.9.
+minimum population to tell 9 from 18 per 100,000:
+  one unit against a KNOWN rate of 9 (18 outside its 95% upper limit): N >= 42,684
+  two units, each with its own sampling error (the realistic case):   N >= 128,053 each
+  8 of the 40 units reach the second threshold; 21 reach the first.

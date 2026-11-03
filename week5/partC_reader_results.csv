@@ -1,0 +1,6 @@
+reader_id,a1,a2,a3,b1,b2,b3,overlap_count,notes
+R1,Dunmere,Pellbrook,Grimsby,Hollowfield,Ironbridge,Pellbrook,1,
+R2,Dunmere,Pellbrook,Grimsby,Marchford,Hollowfield,Elmsworth,0,
+R3,Dunmere,Pellbrook,Grimsby,Pellbrook,Netherby,Hollowfield,1,
+R4,Dunmere,Pellbrook,Netherby,Elmsworth,Marchford,Hollowfield,0,
+R5,Dunmere,Pellbrook,Ironbridge,Elmsworth,Marchford,Hollowfield,0,

@@ -1,0 +1,63 @@
+
+=== CASE 1  size = pop_m ** 2 ===
+marks 60; largest/smallest AREA ratio 346,921x; DIAMETER ratio 589x (brief's '589x' is the diameter ratio, not the area ratio)
+countries under 2.0 M: 9; with s < 4 pt^2 (under 2 pt across): 9; with s < 1 pt^2 (under 1 pt across): 3
+the three biggest countries own 87.3% of all the ink; Wessant's bubble is 353 pt = 4.9 in across (matplotlib: diameter = sqrt(s))
+decoy check: Spearman(pop_m, healthcare_access) = 0.22 (p=0.09); the 6 most populous countries span access 32.8-79.3; Spearman(gdp_pc, access) = 0.89
+
+=== CASE 2  choropleth of cases ===
+24 districts, 30,564 cases, population 57,857,000
+top 3 by count: D17 Qilabad (5,588 cases, rate 51.0), D13 Mehrabad (4,048 cases, rate 64.0), D09 Ilyaspur (3,437 cases, rate 49.9)
+top 3 by rate : D19 Sibbi East (1,381 cases, rate 76.5), D20 Tarmak (994 cases, rate 74.2), D21 Ushkan (744 cases, rate 68.8)
+national pooled rate 52.8; r(cases, population) = 0.986; population varies 23.4x
+distances between the three count leaders (km): D17-D13 578, D17-D09 437, D13-D09 435
+count leaders' ranks by rate: D17 #13, D13 #5, D09 #14
+
+=== CASE 3  min-max PCP, 'GDP barely varies' ===
+after min-max: 58 of 60 below 0.10; median 0.017
+gdp_pc 283 to 120,219 = 425x; max is 9.2x the second (13,009, Brightmoor)
+decoy check: without Aldonia the remaining 59 still span 46x (IQR 1,514 to 4,770); min-max median becomes 0.16
+after RANK scaling: gdp_pc median 0.51, 5 below 0.10 (uniform by construction)
+
+=== CASE 4  PCP in file order ===
+file order: gdp_pc -> healthcare_access -> urban_pct -> median_age -> cases_per_100k; healthcare_access is axis 2, cases_per_100k is axis 5: 3 apart
+r(healthcare_access, cases_per_100k) = -0.799; Spearman = -0.810
+greedy chain: healthcare_access -> cases_per_100k -> urban_pct -> median_age -> gdp_pc; adjacent-pair r: health/cases_ -0.80, cases_/urban_ -0.62, urban_/median +0.64, median/gdp_pc +0.28
+sum of |r| across adjacent axis pairs: file order 2.35, greedy chain 2.34
+
+=== CASE 5  quantile classes on flat rates ===
+join: 24 of 24 matched, 0 failures
+24 districts; rate 31.07 to 33.40; spread = 7.2% of the mean; pooled 32.25
+quantile breaks: 31.07, 31.49, 32.07, 32.51, 32.94, 33.40; smallest class width 0.41, i.e. 1.3% of the pooled rate
+decoy check: observed CV of the rates 2.2%; CV expected from pure Poisson noise at these case counts 7.1% -> the districts vary LESS than chance alone predicts
+districts outside 95% funnel: 0 of 24; largest |z| = 0.58
+
+=== CASE 6  small-area ranking ===
+40 units; pooled 8.72; U32 40.9 = 4.7x national, from 9 cases in 22,000 people
+10 units over 100,000 people: rates 5.5 to 12.0
+U32 exact 95% interval: 4.1-17.1 cases = 18.7-77.7 per 100,000 (wide: nine cases)
+one case fewer or more moves U32 by 4.5 per 100,000 (rate 36.4 / 45.5); pooled rate without U32 8.48
+exact P(>= 9 | expected 1.92) = 0.00018; x40 units = 0.007
+outside 95% funnel: 1 of 40 (['U32']); expected by chance ~2
+
+=== CASE 7  income vs rate, r across districts ===
+r across 24 districts = -0.308
+leave-one-out range of r: -0.393 to -0.192 (no single district drives it)
+decoy check (density confounding): r(income, density) = -0.076; r(rate, density) = 0.001
+population-weighted r across the same 24 districts = -0.369
+aggregated to the 6 coarse zones (income = population-weighted mean): r = -0.746; with a plain mean of district incomes r = -0.889 (also a modelling choice)
+re-cut into the 24 ALTERNATIVE units (areal interpolation, assumes even spread inside each district): r = -0.288; cases conserved: 30,564
+scale effect: 24 -> 6 units moves r from -0.31 to -0.75; zoning effect at the same scale (24 vs 24 alt) moves it +0.02
+
+=== CASE 8  'rural outbreak' ===
+five most populous districts: 12.6% of land, 59.9% of population; their classes: D17=class 3, D09=class 3, D24=class 3, D13=class 4, D11=class 2
+share of LAND vs share of PEOPLE by class: class 1: 18.1% land / 3.4% people; class 2: 25.4% land / 20.6% people; class 3: 25.3% land / 49.5% people; class 4: 22.9% land / 19.2% people; class 5: 8.3% land / 7.3% people
+top two classes: 9 districts, 31.2% of land, 26.5% of people; their pooled density 48/km2 vs 60/km2 for the rest
+decoy check: r(rate, density) = 0.001 (Spearman 0.13); lightest class contains the densest districts? densest 3: D09 (327/km2, class 3), D24 (300/km2, class 3), D17 (296/km2, class 3)
+dark districts include D13 (density 204/km2) and sparse D04 (5.8/km2) is class 1
+
+=== CASE 9  radar chart ===
+means 62.3 and 62.0: difference 0.33 on a 0-100 scale; enclosed areas in file order 9,933 and 9,433
+all 60 distinct axis orders: A wins in 39, B wins in 21; (A-B) area ranges -1,131 to 1,659
+indicator by indicator: A higher on 3, B higher on 3; sum of scores 374 vs 372
+decoy check: the area gap is not a size effect in the data: A-B per indicator = access +3.4, staffing -0.6, funding +35.5, coverage -42.7, equipment +15.3, training -8.9
