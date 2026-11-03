@@ -1,0 +1,7 @@
+# Versions I ran everything with (Python 3.12). Older pandas 2.x should also work.
+pandas>=2.0        # ran with 3.0.2
+numpy>=1.24        # ran with 2.4.4
+matplotlib>=3.7    # ran with 3.10.8
+scipy>=1.10        # ran with 1.17.1   (Spearman in partB_3 only)
+plotly>=5.0        # ran with 7.1.0    (bonus partD only)
+# squarify, statsmodels, seaborn are NOT needed: I drew no treemap and no decomposition.

@@ -1,0 +1,149 @@
+
+==========================================================================
+district_grid.csv  (the register)
+==========================================================================
+rows: 25 | columns: 13
+dtypes of the ones that matter:
+   population            int64
+   households            int64
+   area_km2              float64
+   electrification_pct   object
+   outages               int64
+   outage_minutes        int64
+
+key `code` unique? False   duplicated codes: ['D11']
+code   district zone  population  households  area_km2     lon     lat  income_pc_usd electrification_pct  solar_kw_installed  outages  outage_minutes
+ D11      Kotla   P3     4091000      616114   18868.1 72.5678 29.0466           5950                76.0              719625    31283         6422838
+ D11 Kotla City   P3     4091000      616114   18868.1 72.5678 29.0466           5950                76.0              719637    31280         6422428
+
+electrification_pct is object, not numeric.
+   rows carrying a '%' sign: ['D04', 'D18']
+   rows that are genuinely blank: ['D06', 'D14', 'D23']
+
+outage_minutes == -1 in: ['D09', 'D20']   (a code, not a duration)
+
+ranges of everything I will divide by:
+   population        468,000 .. 10,966,000
+   households            182 .. 1,566,571
+   area_km2         16,745.7 .. 95,677.6
+   outages             3,234 .. 63,237
+   persons per household (population / households), sorted:
+code district  population  households     _pph
+ D13 Mehrabad     6327000     1110000     5.70
+ D05  Emnabad      712000      123183     5.78
+ D23  Wanadar     1703000      289134     5.89
+ D02   Bareli     1937000      264617     7.32
+ D15  Orakcha      783000      106386     7.36
+ D21   Ushkan     1081000         182 5,939.56
+
+join register -> GeoJSON: 24 matched, 0 register codes with no polygon, 0 polygons with no register row
+
+D21: households=182 -> persons/household 5,940.  x1000 gives 5.94  (other districts 5.70-7.36): fits
+
+register area_km2 vs polygon area (spherical): -0.000% .. +0.000%
+
+register after cleaning:
+   rows 24, unique codes True
+   population 57,857,000   households 8,908,512
+   persons per household 5.70 - 7.36
+   electrification_pct 66.6 - 90.3, 3 missing
+   usable outage_minutes 22 of 24, mean interruption 77 - 214 minutes
+   interruptions, all districts 388,879
+
+==========================================================================
+grid_daily.csv  (six zones, daily)
+==========================================================================
+rows: 3061 | dtypes: {'date': 'string', 'zone': 'string', 'cumulative_mwh': 'float64', 'peak_load_mw': 'float64', 'outage_minutes': 'int64'}
+zones: {'P1': 520, 'P2': 511, 'P3': 517, 'P4': 506, 'P5': 496, 'P6': 511}
+
+shape of the `date` strings: {'9999-99-99': 2887, '99/99/9999': 174}
+audit_index on the raw text dates: {'dtype_ok': False, 'monotonic': False, 'n_rows': 3061}
+
+174 rows are written dd/mm/yyyy-looking (with slashes).
+   middle field takes values [11]; first field reaches 30, so it can only be the day
+   year(s): [2025]
+   ISO-format rows that fall in Nov 2025: 0  (so the slash rows ARE November, the whole month)
+
+duplicate (zone, date) keys: 15 extra rows (12 identical copies, 3 conflicting)
+   conflicting filing P3 2025-10-25:
+ cumulative_mwh  peak_load_mw  outage_minutes
+     12363361.7        2429.7             159
+     12363361.7        2337.4             215
+   conflicting filing P5 2026-02-25:
+ cumulative_mwh  peak_load_mw  outage_minutes
+     12010147.6        1004.9              11
+     12010147.6        1044.6               8
+   conflicting filing P5 2026-08-16:
+ cumulative_mwh  peak_load_mw  outage_minutes
+     15736740.2        1491.1              63
+     15736740.2        1550.0              47
+
+value counts at the bottom of peak_load_mw: {-1.0: 46, 914.0: 1, 914.4: 1}
+peak_load_mw == -1: 46 raw rows, 46 after de-duplicating
+no -1 (or any negative) in cumulative_mwh or outage_minutes.
+outage_minutes == 0 on 7.0% of zone-days, spread across all six zones: real quiet days, kept.
+
+calendar: every zone should report every day.
+span 2025-04-01 -> 2026-09-11 = 529 days x 6 zones = 3174 slots; rows kept 3046; never reported 128
+   P1: audit_index dtype_ok=True monotonic=True dup=0 missing=12 partial_tail=True
+   P2: audit_index dtype_ok=True monotonic=True dup=0 missing=21 partial_tail=True
+   P3: audit_index dtype_ok=True monotonic=True dup=0 missing=15 partial_tail=True
+   P4: audit_index dtype_ok=True monotonic=True dup=0 missing=24 partial_tail=True
+   P5: audit_index dtype_ok=True monotonic=True dup=0 missing=36 partial_tail=True
+   P6: audit_index dtype_ok=True monotonic=True dup=0 missing=20 partial_tail=True
+   missing zone-days by zone: {'P1': 12, 'P2': 21, 'P3': 15, 'P4': 24, 'P5': 36, 'P6': 20}
+   missing per month ranges 3-13; P5 alone is 36 of 128 (28%), P1 is 12
+   the last month is partial: the file stops on 2026-09-11 (11 days of September 2026)
+
+cumulative_mwh is a meter READING. Summing it is a deduction; the energy is the change.
+zone-days where the reading goes DOWN: 1
+   P4 2026-02-17: 21,444,254.8 on 2026-02-16 -> 1,180.0
+   a new meter was installed: the counter restarted near zero and the next days climb normally from there
+
+energy delivered, zone P1, June 2026: 1,200,239 MWh
+   the same month if I sum() the column: 574,845,315 MWh (479x too big)
+   months with no usable energy figure: [['P4', '2026-02']]
+   partial final month (flagged complete=False): ['2026-09']
+
+daily after cleaning: 3,046 zone-days kept, 128 never reported, 46 peak readings missing, 1 meter reset
+join daily.zone -> register.zone: 6 matched, 0 unmatched zones in daily, 0 in register
+
+==========================================================================
+generation_mix.csv  (monthly, 18 months)
+==========================================================================
+rows: 162 | months: 18 | rows per month: [9]
+key (month, source, subsource) unique? True
+sources: ['Fossil', 'Hydro', 'Renewable', 'Imported', 'All sources']
+month column parses as year-month: True
+mwh range: 446,189 .. 12,105,903 (no zero, no negative)
+
+exclusivity: is every row a part of the whole?
+   rows that are the 'All sources / Total' line: 18
+   rows that are parts: 144 = 18 months x 8 categories
+   parts summed vs published total: worst month off by 2 MWh
+   every row summed vs the published total: 200.00% .. 200.00%  (a pie of the raw file would add to 200%)
+
+==========================================================================
+join summary
+==========================================================================
+GeoJSON features -> district register: 24 matched, 0 + 0 unmatched
+names that disagree with the GeoJSON after cleaning: none
+
+==========================================================================
+expected-number checks (from the brief) vs what this script produced
+==========================================================================
+   ok  district rows                                   24   expected 24
+   ok  population                              57,857,000   expected 57,857,000
+   ok  households                               8,908,512   expected 8,908,512
+   ok  interruptions                              388,879   expected 388,879
+   ok  usable outage_minutes                           22   expected 22
+   ok  zone-days kept                               3,046   expected 3,046
+   ok  zone-days never reported                       128   expected 128
+   ok  slots                                        3,174   expected 3,174
+   ok  unusable peak readings (raw rows)               46   expected 46
+   ok  meter resets                                     1   expected 1
+   ok  P1 June 2026 energy MWh                  1,200,239   expected 1,200,239
+   ok  sum() of the meter column MWh          574,845,315   expected 574,845,315
+   ok  generation part rows                           144   expected 144
+
+all checks agree.
